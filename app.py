@@ -1,44 +1,9 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import plotly.graph_objs as go
 
-########### Define your variables
-beers=['Chesapeake Stout', 'Snake Dog IPA', 'Imperial Porter', 'Double Dog IPA']
-ibu_values=[35, 60, 85, 75]
-abv_values=[5.4, 7.1, 9.2, 4.3]
-color1='lightblue'
-color2='darkgreen'
-mytitle='Beer Comparison'
-tabtitle='beer!'
-myheading='Flying Dog Beers'
-label1='IBU'
-label2='ABV'
-githublink='https://github.com/austinlasseter/flying-dog-beers'
-sourceurl='https://www.flyingdog.com/beers/'
-
-########### Set up the chart
-bitterness = go.Bar(
-    x=beers,
-    y=ibu_values,
-    name=label1,
-    marker={'color':color1}
-)
-alcohol = go.Bar(
-    x=beers,
-    y=abv_values,
-    name=label2,
-    marker={'color':color2}
-)
-
-beer_data = [bitterness, alcohol]
-beer_layout = go.Layout(
-    barmode='group',
-    title = mytitle
-)
-
-beer_fig = go.Figure(data=beer_data, layout=beer_layout)
-
+from dash.dependencies import Input, Output
+from dash_table import DataTable
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -47,17 +12,73 @@ server = app.server
 app.title=tabtitle
 
 ########### Set up the layout
-app.layout = html.Div(children=[
-    html.H1(myheading),
-    dcc.Graph(
-        id='flyingdog',
-        figure=beer_fig
-    ),
-    html.A('Code on Github', href=githublink),
+app.layout = html.Div([
+    html.Label('Max Interest Rate i (%): '),
+    dcc.Input(id='rate', type='number'),
+    
     html.Br(),
-    html.A('Data Source', href=sourceurl),
+    
+    html.Label('Max Year n: '),
+    dcc.Input(id='year', type='number'),
+    
+    dcc.Graph(id='graph'),
+    
+    DataTable(id='table'),
+])
+
+def transpose(matrix):
+    return [[row[j] for row in matrix] for j in range(len(matrix[0]))]
+
+@app.callback(
+    [
+        Output(component_id='graph', component_property='figure'),
+        Output(component_id='table', component_property='columns'),
+        Output(component_id='table', component_property='data'),
+    ],
+    [
+        Input(component_id='rate', component_property='value'),
+        Input(component_id='year', component_property='value'),
     ]
 )
+def update(maxRate, maxYear):
+    rates=[i for i in range(1, maxRate+1)]
+    years=[n for n in range(1, maxYear+1)]
+    data=[]
+    
+    for i in rates:
+        data.append(
+            dict(
+                x=years,
+                y=[round((1-(1+i/100)**-n)/i*100, 4) for n in years],
+                name=f'{i}%'
+            )
+        )
+    
+    columns=[dict(name='Year', id='Year')]+[dict(name=x['name'], id=x['name']) for x in data]
+
+    matrix=[trace['y'] for trace in data]
+
+    tposed=transpose(matrix)
+
+    sheet=[{column['id']: value for column, value in zip(columns, row)} for row in tposed]
+    for i, row in enumerate(sheet):
+        row['Year']=i+1
+    
+    return (
+        dict(
+            data=data,
+            layout=dict(
+                xaxis=dict(
+                    title='Year'
+                ),
+                yaxis=dict(
+                    title='Present Value'
+                ),
+            )
+        ),
+        columns,
+        sheet
+    )
 
 if __name__ == '__main__':
     app.run_server()
