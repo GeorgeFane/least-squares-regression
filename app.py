@@ -22,11 +22,10 @@ app.layout = html.Div([
     
     dcc.Graph(id='graph'),
     
-    DataTable(id='table'),
+    DataTable(
+        id='table',
+    ),
 ])
-
-def transpose(matrix):
-    return [[row[j] for row in matrix] for j in range(len(matrix[0]))]
 
 @app.callback(
     [
@@ -53,13 +52,13 @@ def update(maxRate, maxYear):
             )
         )
     
-    columns=[dict(name='Year', id='Year')]+[dict(name=x['name'], id=x['name']) for x in data]
-
     matrix=[trace['y'] for trace in data]
-
-    tposed=transpose(matrix)
-
-    sheet=[{column['id']: value for column, value in zip(columns, row)} for row in tposed]
+    tposed=[[row[j] for row in matrix] for j in range(len(matrix[0]))]
+    
+    columns=[dict(name=x['name'], id=x['name']) for x in data]
+    sheet=[{column['id']: value for column, value in zip(columns, row)} for i, row in enumerate(tposed)]
+    
+    columns.insert(0, dict(name='Year', id='Year'))
     for i, row in enumerate(sheet):
         row['Year']=i+1
     
