@@ -79,8 +79,6 @@ def getCoefs(x, y, degrees):
     
     return [row[-1] for row in reduce(system)]
 
-app=JupyterDash(__name__)
-
 app.layout = html.Div([
     html.H1('Least-Squares Regression'),
     
