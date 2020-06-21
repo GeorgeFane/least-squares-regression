@@ -79,7 +79,11 @@ def getCoefs(x, y, degrees):
     
     return [row[-1] for row in reduce(system)]
 
+app=JupyterDash(__name__)
+
 app.layout = html.Div([
+    html.H1('Least-Squares Regression'),
+    
     html.Label('Space-Separated Data: '),
     dcc.Input(id='points'),
     
@@ -120,7 +124,7 @@ app.layout = html.Div([
     html.Br(),
     html.Div(id='y'),
     
-], style=dict(columnCount=1))
+], style=dict(columnCount=2))
 
 pairs=1
 
