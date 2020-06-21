@@ -122,7 +122,7 @@ app.layout = html.Div([
     html.Br(),
     html.Div(id='y'),
     
-], style=dict(columnCount=2))
+], style=dict(columnCount=1))
 
 pairs=1
 
