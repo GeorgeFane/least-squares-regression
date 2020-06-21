@@ -84,59 +84,25 @@ app.layout = html.Div([
     
     html.Label('Space-Separated Data: '),
     dcc.Input(id='points'),
-    
-    html.Div(children='''
-        For example, input points
-        (1, 0), (2, 3), (3, 7), (4, 14), (5, 22)
-        as 1 0 2 3 3 7 4 14 5 22
-    '''),
-    
     html.Br(),
-    
+
+    html.Label('For example, input points (1, 0), (2, 3), (3, 7), (4, 14), (5, 22) as 1 0 2 3 3 7 4 14 5 22'),
+    html.Br(),
+    html.Br(),
+
     html.Label('Degrees of Best-Fit Line: '),
-    dcc.Input(id='degrees', type='number'),
-    
-    html.Br(),
-    html.Br(),
-    
-    html.Label('Data Table'),
-    DataTable(
-        id='table',
-        columns=[
-            dict(name='x', id='x'),
-            dict(name='y', id='y'),
-        ]
-    ),
-    
-    html.Br(),
-    
-    dcc.Graph(
-        id='graph',
-    ),
+    dcc.Input(id='degrees', type='number', value=-1),
     
     html.Div(id='eq'),
     html.Br(),
-    
+
     html.Label('Model Prediction for x = '),
     dcc.Input(id='x', type='number'),
     html.Br(),
     html.Div(id='y'),
     
-], style=dict(columnCount=1))
-
-pairs=1
-
-@app.callback(
-    Output('table', 'data'),
-    [
-        Input('points', 'value'),
-    ]
-)
-def fillTable(points):
-    global pairs
-    pairs = getPairs(points)
-    
-    return [dict(x=pair[0], y=pair[1]) for pair in pairs]
+    dcc.Graph(id='graph'),    
+])
 
 coefs=1
 
@@ -146,17 +112,13 @@ coefs=1
         Output('eq', 'children'),
     ],
     [
+        Input('points', 'value'),
         Input('degrees', 'value'),
     ]
 )
-def fillChart(degrees):
-    x, y=transpose(pairs)
-    
-    global coefs
-    coefs=getCoefs(x, y, degrees)
-    
-    x1=randX(min(x), max(x))
-    y1=getY(x1, degrees)
+def fillChart(points, degrees):
+    x, y=transpose(getPairs(points))
+    eq=''
           
     traces=[
         dict(
@@ -164,22 +126,34 @@ def fillChart(degrees):
             y=y,
             mode='markers',
             name='Data'
-        ),
-        dict(
-            x=x1,
-            y=y1,
-            name='Line of Best Fit'
         )
     ]
+    
+    if degrees>=0:
+        global coefs
+        coefs=getCoefs(x, y, degrees)
+
+        x1=randX(min(x), max(x))
+        y1=getY(x1, degrees)
+
+        traces.append(
+            dict(
+                x=x1,
+                y=y1,
+                name='Line of Best Fit'
+            )
+        )
+        
+        eq='Model: f(x) = ' + ' + '.join([f'({coef}x^{i})' for i, coef in enumerate(coefs)])
     
     return (
         dict(
             data=traces,
             layout=dict(
-                title='Data Plot'
-            )   
+                hovermode='closest'
+            )
         ),
-        'Model: f(x) = ' + ' + '.join([f'({coef}x^{i})' for i, coef in enumerate(coefs)])
+        eq
     )
 
 @app.callback(
