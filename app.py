@@ -85,13 +85,10 @@ app.layout = html.Div([
     html.Label('Space-Separated Data: '),
     dcc.Input(id='points'),
     html.Br(),
-
     html.Label('For example, input points (1, 0), (2, 3), (3, 7), (4, 14), (5, 22) as 1 0 2 3 3 7 4 14 5 22'),
-    html.Br(),
 
     html.Label('Degrees of Best-Fit Line: '),
-    dcc.Input(id='degrees', type='number', value=-1),
-    
+    dcc.Input(id='degrees', type='number', value=-1),    
     html.Div(id='eq'),
     html.Br(),
 
