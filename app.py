@@ -144,7 +144,7 @@ def fillChart(points, degrees):
             )
         )
         
-        eq='Model: f(x) = ' + ' + '.join([f'({coef}x^{i})' for i, coef in enumerate(coefs)])
+        eq=f'Model: f (x, {degrees}) = ' + ' + '.join([f'({round(coef, 9)}) x^{i}' for i, coef in enumerate(coefs)])
     
     return (
         dict(
@@ -153,7 +153,7 @@ def fillChart(points, degrees):
                 hovermode='closest'
             )
         ),
-        eq
+        eq,
     )
 
 @app.callback(
@@ -163,8 +163,8 @@ def fillChart(points, degrees):
         Input('degrees', 'value'),
     ]
 )
-def predict(x, degrees):
-    return f'f({x}) = {getY([x], degrees)}'
+def predict(x, degrees):       
+    return f'f ({x}, {degrees}) = {round(getY([x], degrees)[0], 9)}'
 
 if __name__ == '__main__':
     app.run_server()
