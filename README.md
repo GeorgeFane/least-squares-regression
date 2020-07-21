@@ -1,1 +1,1 @@
-
+This code uses linear algebra techniques to find best-fit lines and polynomials for inputted data. It offers predictions for x-values beyond the data. A web app implementing this code can be found at: https://least-squares-regression.herokuapp.com/
