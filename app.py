@@ -92,15 +92,9 @@ app.layout = html.Div([
             html.Label('Degrees of Best-Fit Line: '),
             dcc.Input(id='degrees', type='number'),
             
-            html.Div(id='eq'),
-            
             html.Div(id='coefs', style={'display': 'none'}),
             
-            dcc.Graph(id='graph'), 
-
-            html.Label('Model Prediction for x = '),
-            dcc.Input(id='x', type='number'),
-            html.Div(id='y'),
+            html.Div(id='eq'),
 
         ], className="six columns"),
 
@@ -114,9 +108,31 @@ app.layout = html.Div([
             ),
             
             html.Div(id='derivEq'),
-            
+
+        ], className="six columns"),
+    ], className="row"),
+
+    html.Div([
+        html.Div([
+            dcc.Graph(id='graph'), 
+
+        ], className="six columns"),
+
+        html.Div([
             dcc.Graph(id='derivGraph'), 
 
+        ], className="six columns"),
+    ], className="row"),
+
+    html.Div([
+        html.Div([
+            html.Label('Model Prediction for x = '),
+            dcc.Input(id='x', type='number'),
+            html.Div(id='y'),
+
+        ], className="six columns"),
+
+        html.Div([
             html.Label('n-th Derivative of Model at x = '),
             dcc.Input(id='xDeriv', type='number'),
             html.Div(id='yDeriv'),
