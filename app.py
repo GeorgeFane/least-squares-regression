@@ -82,35 +82,31 @@ app.layout = html.Div([
     html.H1('Least-Squares Regression'),
     
     html.Label('Space-Separated Data: '),
-    dcc.Input(id='points', value='1 0 2 3 3 7 4 14 5 22'),
-    html.Br(),
+    dcc.Input(id='points'),
 
     html.Label('For example, input points (1, 0), (2, 3), (3, 7), (4, 14), (5, 22) as 1 0 2 3 3 7 4 14 5 22'),
-    html.Br(),
     html.Br(),
 
     html.Div([
         html.Div([
             html.Label('Degrees of Best-Fit Line: '),
-            dcc.Input(id='degrees', type='number', value=2),
+            dcc.Input(id='degrees', type='number'),
             
             html.Div(id='eq'),
             
             html.Div(id='coefs', style={'display': 'none'}),
             
             dcc.Graph(id='graph'), 
-            html.Br(),   
 
             html.Label('Model Prediction for x = '),
             dcc.Input(id='x', type='number'),
-            html.Br(),
             html.Div(id='y'),
+
         ], className="six columns"),
 
         html.Div([
             html.Label('n-th Derivative of Model'),
             dcc.Dropdown(id='derivDrop'),
-            html.Br(),
             
             html.Div(
                 id='derivs', 
@@ -120,12 +116,11 @@ app.layout = html.Div([
             html.Div(id='derivEq'),
             
             dcc.Graph(id='derivGraph'), 
-            html.Br(),   
 
             html.Label('n-th Derivative of Model at x = '),
             dcc.Input(id='xDeriv', type='number'),
-            html.Br(),
             html.Div(id='yDeriv'),
+
         ], className="six columns"),
     ], className="row"),
 ])
